@@ -7,11 +7,13 @@
   <title>Document</title>
 </head>
 <body>
-  <p>Hello <span>World!</span></p>
+  <h1>Hello <span>World!</span></h1>
   <p class="element"></p>
   <script src="../lettering.min.js"></script>
   <script>
-    var lettering = new Lettering('p');
+    var lettering = new Lettering('h1',{
+      fps: 2
+    });
     console.log(lettering);
   </script>
 </body>

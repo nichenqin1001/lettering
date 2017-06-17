@@ -11,7 +11,7 @@ const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
 const x = p => { throw new Error(`Missing Parameter: ${p}`); };
 
 const defaultOptions = {
-  fps: 3
+  fps: 10
 };
 
 const removeChild = el => {
@@ -23,8 +23,8 @@ const removeChild = el => {
 class Lettering {
   /**
    * Creates an instance of Lettering.
-   * @param {HTMLElement} el 
-   * @param {object} options 
+   * @param {HTMLElement} el required
+   * @param {object} options configs
    * 
    * @memberof Lettering
    */
@@ -33,16 +33,25 @@ class Lettering {
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     // init options
     this.options = Object.assign({}, defaultOptions, options);
-
+    // string inside the element
     this.string = this.el.textContent;
 
-    this.stringArrLike = Array.prototype.slice.call(this.string);
+    let _index;
+    Object.defineProperties(this, {
+      'maxStringIndex': { value: this.string.length },
+      'stringIndex': {
+        get() { return _index; },
+        set(value) {
+          if (value < 1) value = 1;
+          if (value >= this.maxStringIndex) value = this.maxStringIndex;
+          _index = value;
+        }
+      }
+    });
 
-    this.stringIndex = 0;
-
+    this.stringIndex = 1;
+    // time stamp used to control frame speed, set to null initialize
     this.lastTime = null;
-
-    this._animate = this._animate.bind(this);
 
     this._init();
   }
@@ -53,7 +62,8 @@ class Lettering {
   }
 
   _printChar(num) {
-    this.el.appendChild(document.createTextNode(this.stringArrLike[num]));
+    // this.el.appendChild(document.createTextNode(this.stringArrLike[num]));
+    this.el.textContent = this.string.substring(0, num);
     this.stringIndex++;
   }
 
@@ -67,12 +77,13 @@ class Lettering {
 
     // the 1000 here presents 1000ms;
     if (delta > 1000 / this.options.fps) {
+      // print char into document
       this._printChar(this.stringIndex);
+      // update timestamp
       this.lastTime = now;
     }
 
-
-    if (this.stringIndex < this.stringArrLike.length) return this.requestId = rAF(this._animate);
+    if (this.stringIndex <= this.string.length) return this.requestId = rAF(this._animate.bind(this));
   }
 
   print() {
