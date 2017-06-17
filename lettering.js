@@ -10,8 +10,16 @@ const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
 
 const x = p => { throw new Error(`Missing Parameter: ${p}`); };
 
+const removeChild = el => {
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+};
+
 const defaultOptions = {
-  fps: 10
+  fps: 10,
+  autoStart: true,
+  caretShow: true
 };
 
 class Lettering {
@@ -33,6 +41,9 @@ class Lettering {
 
     let _index;
     Object.defineProperties(this, {
+      'outputElement': { value: document.createElement('span') },
+      'outputText': { value: document.createElement('span') },
+      'outputCaret': { value: document.createElement('span') },
       // cause using String.substring function
       'maxStringIndex': { value: this.string.length + 1 },
       'stringIndex': {
@@ -51,21 +62,41 @@ class Lettering {
     this.requestId = null;
     this.isAnitmating = false;
     this.isBackspace = false;
+    // todo: calculate caretShow with options
+    this.caretShow = false;
 
     this._init();
   }
 
   _init() {
-    // this.typing();
+    removeChild(this.el);
+    this.outputElement.appendChild(this.outputText);
+    this.outputElement.appendChild(this.outputCaret);
+    this.el.appendChild(this.outputElement);
+    this._cssOutputElement();
+    this.options.autoStart && this.typing();
+  }
+
+  _cssOutputElement() {
+    this.outputElement.style.position = 'relative';
+    this.outputElement.style.display =
+      this.outputText.style.display =
+      this.outputCaret.style.display = 'inline-block';
+    this.outputCaret.style.position = 'absolute';
+    this.outputCaret.style.top = 0;
+    this.outputCaret.style.bottom = 0;
+    this.outputCaret.style.right = '-5px';
+    this.outputCaret.style.width = '5px';
+    this.outputCaret.style.backgroundColor = 'inherit';
   }
 
   _printChar() {
-    this.el.textContent = this.string.substring(0, this.stringIndex);
+    this.outputText.textContent = this.string.substring(0, this.stringIndex);
     this.stringIndex++;
   }
 
   _removeChar() {
-    this.el.textContent = this.string.substring(0, this.stringIndex - 1);
+    this.outputText.textContent = this.string.substring(0, this.stringIndex - 1);
     this.stringIndex--;
   }
 
@@ -80,7 +111,7 @@ class Lettering {
     if (shouldAnimate) {
       // print char into document
       this.isBackspace ? this._removeChar() : this._printChar();
-      // update timestamp to calculate delta again
+      // update timestamp to calculate delta again in next animation loop
       this.lastTime = now;
     }
     if (this.stringIndex === this.maxStringIndex || this.stringIndex === 0) return this.stop();
