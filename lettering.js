@@ -8,17 +8,17 @@ const rAF = window.requestAnimationFrame ||
 // define cancelAnimationFrame function
 const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
 
-const x = p => { throw new Error(`Missing Parameter: ${p}`) }
+const x = p => { throw new Error(`Missing Parameter: ${p}`); };
 
 const defaultOptions = {
-  speed: 150
-}
+  fps: 3
+};
 
 const removeChild = el => {
   while (el.firstChild) {
     el.removeChild(el.firstChild);
   }
-}
+};
 
 class Lettering {
   /**
@@ -32,7 +32,7 @@ class Lettering {
     // init type element
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     // init options
-    this.options = Object.assign({}, defaultOptions, options)
+    this.options = Object.assign({}, defaultOptions, options);
 
     this.string = this.el.textContent;
 
@@ -40,30 +40,48 @@ class Lettering {
 
     this.stringIndex = 0;
 
-    this.print = this.print.bind(this);
+    this.lastTime = null;
+
+    this._animate = this._animate.bind(this);
 
     this._init();
   }
 
   _init() {
     removeChild(this.el);
-
     this.print();
   }
 
-  _renderText(num) {
+  _printChar(num) {
     this.el.appendChild(document.createTextNode(this.stringArrLike[num]));
+    this.stringIndex++;
+  }
+
+  _removeChar() {
+
+  }
+
+  _animate() {
+    const now = Date.now();
+    const delta = now - this.lastTime;
+
+    // the 1000 here presents 1000ms;
+    if (delta > 1000 / this.options.fps) {
+      this._printChar(this.stringIndex);
+      this.lastTime = now;
+    }
+
+
+    if (this.stringIndex < this.stringArrLike.length) return this.requestId = rAF(this._animate);
   }
 
   print() {
-    this._renderText(this.stringIndex);
+    this.lastTime = Date.now();
 
-    this.stringIndex++;
-
-    if (this.stringIndex < this.stringArrLike.length) return this.requestId = rAF(this.print);
+    this._animate();
   }
 
-  back() {
+  remove() {
 
   }
 
