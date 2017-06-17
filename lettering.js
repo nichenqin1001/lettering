@@ -14,12 +14,6 @@ const defaultOptions = {
   fps: 10
 };
 
-const removeChild = el => {
-  while (el.firstChild) {
-    el.removeChild(el.firstChild);
-  }
-};
-
 class Lettering {
   /**
    * Creates an instance of Lettering.
@@ -31,19 +25,21 @@ class Lettering {
   constructor(el = x`el`, options = {}) {
     // init type element
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
+    if (!!this.el.children.length) console.warn('lettering:', 'HTMLCollection in the element will be ignored, only text inside will remain');
     // init options
     this.options = Object.assign({}, defaultOptions, options);
     // string inside the element
-    this.string = this.el.textContent;
+    this.string = this.el.innerText;
 
     let _index;
     Object.defineProperties(this, {
-      'maxStringIndex': { value: this.string.length },
+      // cause using String.substring function
+      'maxStringIndex': { value: this.string.length + 1 },
       'stringIndex': {
         get() { return _index; },
         set(value) {
-          if (value < 1) value = 1;
-          if (value >= this.maxStringIndex) value = this.maxStringIndex;
+          if (value < 0) value = 0;
+          if (value > this.maxStringIndex) value = this.maxStringIndex;
           _index = value;
         }
       }
@@ -52,18 +48,17 @@ class Lettering {
     this.stringIndex = 1;
     // time stamp used to control frame speed, set to null initialize
     this.lastTime = null;
+    this.isAnitmating = false;
 
     this._init();
   }
 
   _init() {
-    removeChild(this.el);
-    this.print();
+    // this.typing();
   }
 
-  _printChar(num) {
-    // this.el.appendChild(document.createTextNode(this.stringArrLike[num]));
-    this.el.textContent = this.string.substring(0, num);
+  _printChar() {
+    this.el.textContent = this.string.substring(0, this.stringIndex);
     this.stringIndex++;
   }
 
@@ -74,26 +69,35 @@ class Lettering {
   _animate() {
     const now = Date.now();
     const delta = now - this.lastTime;
-
-    // the 1000 here presents 1000ms;
-    if (delta > 1000 / this.options.fps) {
+    // the 1000 here means 1000ms;
+    const shouldAnimate = delta > 1000 / this.options.fps;
+    if (shouldAnimate) {
       // print char into document
-      this._printChar(this.stringIndex);
+      this._printChar();
       // update timestamp
       this.lastTime = now;
     }
-
-    if (this.stringIndex <= this.string.length) return this.requestId = rAF(this._animate.bind(this));
+    if (this.stringIndex === this.maxStringIndex) return this.stop();
+    if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
   }
 
-  print() {
+  typing() {
+    this.isAnitmating = true;
     this.lastTime = Date.now();
 
     this._animate();
   }
 
-  remove() {
+  backspace() {
+    this.isAnitmating = true;
+    this.lastTime = Date.now();
 
+    this._animate();
+  }
+
+  stop() {
+    cAF(this.requestId);
+    this.isAnitmating = false;
   }
 
 }
