@@ -63,8 +63,6 @@ class Lettering {
     this.requestId = null;
     this.isAnitmating = false;
     this.isBackspace = false;
-    // todo: calculate caretShow with options
-    this.caretShow = false;
 
     this._init();
   }
@@ -72,7 +70,6 @@ class Lettering {
   _init() {
     removeChild(this.el);
     this.outputElement.appendChild(this.outputText);
-    this.outputElement.appendChild(this.outputCaret);
     this.el.appendChild(this.outputElement);
     this._cssOutputElement();
     this.options.autoStart && this.typing();
@@ -88,7 +85,18 @@ class Lettering {
     this.outputCaret.style.bottom = 0;
     this.outputCaret.style.right = '-5px';
     this.outputCaret.style.width = '3px';
-    this.outputCaret.style.backgroundColor = this.mainColor;
+    this.outputCaret.style.backgroundColor = this.options.caretColor || this.mainColor;
+  }
+
+  _createOutputCaret() {
+    if (this.isAnitmating && this.options.caretShow) {
+      this.outputElement.appendChild(this.outputCaret);
+    }
+    return this;
+  }
+
+  _removeOutputCaret() {
+    this.outputElement.removeChild(this.outputCaret);
   }
 
   _printChar() {
@@ -101,7 +109,12 @@ class Lettering {
     this.stringIndex--;
   }
 
+  _blink() {
+
+  }
+
   _animate() {
+    this.isAnitmating = true;
     // create new time stamp
     const now = Date.now();
     // calculate time delta
@@ -120,16 +133,15 @@ class Lettering {
   }
 
   typing() {
-    this.isBackspace = false;
     this.isAnitmating = true;
+    this.isBackspace = false;
     this.lastTime = Date.now();
-
-    this._animate();
+    this._createOutputCaret()._animate();
   }
 
   backspace() {
-    this.isBackspace = true;
     this.isAnitmating = true;
+    this.isBackspace = true;
     this.lastTime = Date.now();
 
     this._animate();
