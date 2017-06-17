@@ -34,6 +34,7 @@ class Lettering {
     // init type element
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     if (!!this.el.children.length) console.warn('lettering:', 'HTMLCollection in the element will be ignored, only text inside will remain');
+    this.mainColor = window.getComputedStyle(this.el).getPropertyValue('color');
     // init options
     this.options = Object.assign({}, defaultOptions, options);
     // string inside the element
@@ -86,8 +87,8 @@ class Lettering {
     this.outputCaret.style.top = 0;
     this.outputCaret.style.bottom = 0;
     this.outputCaret.style.right = '-5px';
-    this.outputCaret.style.width = '5px';
-    this.outputCaret.style.backgroundColor = 'inherit';
+    this.outputCaret.style.width = '3px';
+    this.outputCaret.style.backgroundColor = this.mainColor;
   }
 
   _printChar() {
