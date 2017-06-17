@@ -22,7 +22,7 @@ class Lettering {
    * 
    * @memberof Lettering
    */
-  constructor(el = x`el`, options = {}) {
+  constructor(el = x`el`, options = defaultOptions) {
     // init type element
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     if (!!this.el.children.length) console.warn('lettering:', 'HTMLCollection in the element will be ignored, only text inside will remain');
@@ -48,7 +48,9 @@ class Lettering {
     this.stringIndex = 1;
     // time stamp used to control frame speed, set to null initialize
     this.lastTime = null;
+    this.requestId = null;
     this.isAnitmating = false;
+    this.isBackspace = false;
 
     this._init();
   }
@@ -63,25 +65,30 @@ class Lettering {
   }
 
   _removeChar() {
-
+    this.el.textContent = this.string.substring(0, this.stringIndex - 1);
+    this.stringIndex--;
   }
 
   _animate() {
+    // create new time stamp
     const now = Date.now();
+    // calculate time delta
     const delta = now - this.lastTime;
     // the 1000 here means 1000ms;
     const shouldAnimate = delta > 1000 / this.options.fps;
+    // main animation here
     if (shouldAnimate) {
       // print char into document
-      this._printChar();
-      // update timestamp
+      this.isBackspace ? this._removeChar() : this._printChar();
+      // update timestamp to calculate delta again
       this.lastTime = now;
     }
-    if (this.stringIndex === this.maxStringIndex) return this.stop();
+    if (this.stringIndex === this.maxStringIndex || this.stringIndex === 0) return this.stop();
     if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
   }
 
   typing() {
+    this.isBackspace = false;
     this.isAnitmating = true;
     this.lastTime = Date.now();
 
@@ -89,6 +96,7 @@ class Lettering {
   }
 
   backspace() {
+    this.isBackspace = true;
     this.isAnitmating = true;
     this.lastTime = Date.now();
 
@@ -98,6 +106,7 @@ class Lettering {
   stop() {
     cAF(this.requestId);
     this.isAnitmating = false;
+    this.isBackspace ? this.stringIndex++ : this.stringIndex--;
   }
 
 }

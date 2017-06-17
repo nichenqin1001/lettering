@@ -9,14 +9,13 @@
 <body>
   <h1>
     hello
-    <span class="hello">Hello World!</span>
   </h1>
   <button class="typing">typing</button>
   <button class="backspace">backspace</button>
   <script src="../lettering.min.js"></script>
   <script>
     var lettering = new Lettering('h1',{
-      fps: 10
+      fps: 1
     });
     console.log(lettering);
     document.querySelector('.typing').addEventListener('click',function(){lettering.typing()})
