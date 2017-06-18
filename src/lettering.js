@@ -7,7 +7,13 @@ const defaultOptions = {
   caretShow: true
 };
 
-class Lettering {
+/**
+ * 
+ * 
+ * @class Lettering
+ * @extends {EventEmitter}
+ */
+class Lettering extends EventEmitter {
   /**
    * Creates an instance of Lettering.
    * @param {HTMLElement} el required
@@ -16,13 +22,14 @@ class Lettering {
    * @memberof Lettering
    */
   constructor(el = x`el`, options = defaultOptions) {
+    super();
     // init type element
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     if (!!this.el.children.length) console.warn('lettering:', 'HTMLCollection in the element will be ignored, only text inside will remain');
-    this.mainColor = window.getComputedStyle(this.el).getPropertyValue('color');
     this.isInput = !!this.el.placeholder;
     // init options
     this.options = Object.assign({}, defaultOptions, options);
+    this.caretColor = this.options.caretColor || window.getComputedStyle(this.el).getPropertyValue('color');
     // string inside the element
     this.string = this.isInput ? this.el.placeholder : this.el.innerText;
 
@@ -79,7 +86,7 @@ class Lettering {
     this.outputCaret.style.bottom = 0;
     this.outputCaret.style.right = '-5px';
     this.outputCaret.style.width = '2px';
-    this.outputCaret.style.backgroundColor = this.options.caretColor || this.mainColor;
+    this.outputCaret.style.backgroundColor = this.options.caretColor || this.caretColor;
     this.outputCaret.style.opacity = 1;
   }
 
@@ -116,7 +123,10 @@ class Lettering {
       // update timestamp to calculate delta again in next animation loop
       this.lastTime = now;
     }
-    if (this.stringIndex === this.maxStringIndex || this.stringIndex === 0) return this.stop();
+    if (this.stringIndex === this.maxStringIndex || this.stringIndex === 0)
+      return this
+        .stop()
+        .trigger('done', { string: this.string });
     if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
   }
 
