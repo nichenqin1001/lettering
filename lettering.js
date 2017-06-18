@@ -17,7 +17,7 @@ const removeChild = el => {
 };
 
 const defaultOptions = {
-  fps: 10,
+  fps: 15,
   autoStart: true,
   caretShow: true
 };
@@ -35,10 +35,11 @@ class Lettering {
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     if (!!this.el.children.length) console.warn('lettering:', 'HTMLCollection in the element will be ignored, only text inside will remain');
     this.mainColor = window.getComputedStyle(this.el).getPropertyValue('color');
+    this.isInput = !!this.el.placeholder;
     // init options
     this.options = Object.assign({}, defaultOptions, options);
     // string inside the element
-    this.string = this.el.innerText;
+    this.string = this.isInput ? this.el.placeholder : this.el.innerText;
 
     let _index;
     Object.defineProperties(this, {
@@ -69,14 +70,18 @@ class Lettering {
 
   _init() {
     removeChild(this.el);
+    !this.isInput && this._createOutput()._cssOutputElement();
+    this.options.autoStart && this.typing();
+  }
+
+  _createOutput() {
     this.el.appendChild(this.outputElement);
     this.outputElement.appendChild(this.outputText);
     if (this.options.caretShow) {
       this.outputElement.appendChild(this.outputCaret);
       this._blink();
     }
-    this._cssOutputElement();
-    this.options.autoStart && this.typing();
+    return this;
   }
 
   _cssOutputElement() {
@@ -88,13 +93,16 @@ class Lettering {
     this.outputCaret.style.top = 0;
     this.outputCaret.style.bottom = 0;
     this.outputCaret.style.right = '-5px';
-    this.outputCaret.style.width = '3px';
+    this.outputCaret.style.width = '2px';
     this.outputCaret.style.backgroundColor = this.options.caretColor || this.mainColor;
     this.outputCaret.style.opacity = 1;
   }
 
   _printChar() {
-    this.outputText.textContent = this.string.substring(0, this.stringIndex);
+    const newString = this.string.substring(0, this.stringIndex);
+    this.isInput
+      ? this.el.placeholder = newString
+      : this.outputText.textContent = newString;
     this.stringIndex++;
   }
 
@@ -124,16 +132,22 @@ class Lettering {
     if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
   }
 
+  /**
+   * caret blink animation
+   * all the time stamp will wrapped inside the function
+   * because the rate of blink animation is constant
+   * @memberof Lettering
+   */
   _blink() {
     let lastTime = Date.now();
 
     const _blinkAnimate = () => {
       const now = Date.now();
       const delta = now - lastTime;
+      const shouldBlink = delta > 1000 / 2;
 
-      if (delta > 1000 / 2) {
+      if (shouldBlink) {
         this.outputCaret.style.opacity--;
-        console.log(this.outputCaret.style.opacity);
         if (this.outputCaret.style.opacity < 0) this.outputCaret.style.opacity = 1;
         lastTime = now;
       }
@@ -144,7 +158,6 @@ class Lettering {
     _blinkAnimate();
 
   }
-
 
   typing() {
     this.isAnitmating = true;

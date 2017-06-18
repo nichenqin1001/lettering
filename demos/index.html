@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <style>
+  h1{
+    color: yellowgreen
+  }
+  </style>
 </head>
 <body>
   <h1>
@@ -12,14 +17,24 @@
   </h1>
   <button class="typing">typing</button>
   <button class="backspace">backspace</button>
+  <div>
+    <input type="text" placeholder="测试input">
+    <button class="typing-input">typing</button>
+    <button class="backspace-input">backspace</button>
+  </div>
   <script src="../lettering.min.js"></script>
   <script>
     var lettering = new Lettering('h1',{
       fps: 15
     });
     console.log(lettering);
-    document.querySelector('.typing').addEventListener('click',function(){lettering.typing()})
-    document.querySelector('.backspace').addEventListener('click',function(){lettering.backspace()})
+    document.querySelector('.typing').addEventListener('click',function(){ lettering.typing(); })
+    document.querySelector('.backspace').addEventListener('click',function(){ lettering.backspace(); })
+    var lettering2 = new Lettering('input')
+    console.log(lettering2);
+    document.querySelector('.typing-input').addEventListener('click',function(){ lettering2.typing(); })
+    document.querySelector('.backspace-input').addEventListener('click',function(){ lettering2.backspace(); })
+
   </script>
 </body>
 </html>
