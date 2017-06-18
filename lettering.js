@@ -58,19 +58,23 @@ class Lettering {
     });
 
     this.stringIndex = 1;
+    this.isBackspace = false;
+    this.isAnitmating = false;
     // time stamp used to control frame speed, set to null initialize
     this.lastTime = null;
     this.requestId = null;
-    this.isAnitmating = false;
-    this.isBackspace = false;
 
     this._init();
   }
 
   _init() {
     removeChild(this.el);
-    this.outputElement.appendChild(this.outputText);
     this.el.appendChild(this.outputElement);
+    this.outputElement.appendChild(this.outputText);
+    if (this.options.caretShow) {
+      this.outputElement.appendChild(this.outputCaret);
+      this._blink();
+    }
     this._cssOutputElement();
     this.options.autoStart && this.typing();
   }
@@ -86,17 +90,7 @@ class Lettering {
     this.outputCaret.style.right = '-5px';
     this.outputCaret.style.width = '3px';
     this.outputCaret.style.backgroundColor = this.options.caretColor || this.mainColor;
-  }
-
-  _createOutputCaret() {
-    if (this.isAnitmating && this.options.caretShow) {
-      this.outputElement.appendChild(this.outputCaret);
-    }
-    return this;
-  }
-
-  _removeOutputCaret() {
-    this.outputElement.removeChild(this.outputCaret);
+    this.outputCaret.style.opacity = 1;
   }
 
   _printChar() {
@@ -109,10 +103,6 @@ class Lettering {
     this.stringIndex--;
   }
 
-  _blink() {
-
-  }
-
   _animate() {
     this.isAnitmating = true;
     // create new time stamp
@@ -123,6 +113,8 @@ class Lettering {
     const shouldAnimate = delta > 1000 / this.options.fps;
     // main animation here
     if (shouldAnimate) {
+      // the caret always show when you are typing, right?
+      this.outputCaret.style.opacity = 1;
       // print char into document
       this.isBackspace ? this._removeChar() : this._printChar();
       // update timestamp to calculate delta again in next animation loop
@@ -132,11 +124,34 @@ class Lettering {
     if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
   }
 
+  _blink() {
+    let lastTime = Date.now();
+
+    const _blinkAnimate = () => {
+      const now = Date.now();
+      const delta = now - lastTime;
+
+      if (delta > 1000 / 2) {
+        this.outputCaret.style.opacity--;
+        console.log(this.outputCaret.style.opacity);
+        if (this.outputCaret.style.opacity < 0) this.outputCaret.style.opacity = 1;
+        lastTime = now;
+      }
+
+      rAF(_blinkAnimate.bind(this));
+    };
+
+    _blinkAnimate();
+
+  }
+
+
   typing() {
     this.isAnitmating = true;
     this.isBackspace = false;
     this.lastTime = Date.now();
-    this._createOutputCaret()._animate();
+
+    this._animate();
   }
 
   backspace() {
