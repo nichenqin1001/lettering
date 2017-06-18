@@ -2,7 +2,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 
 export default {
-  entry: './lettering.js',
+  entry: './src/lettering.js',
   format: 'umd',
   plugins: [
     resolve(),
@@ -11,5 +11,5 @@ export default {
     })
   ],
   moduleName: 'Lettering',
-  dest: 'lettering.min.js'
+  dest: './dist/lettering.min.js'
 };

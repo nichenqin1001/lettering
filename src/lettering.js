@@ -1,20 +1,5 @@
-const rAF = window.requestAnimationFrame ||
-  window.webkitRequestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  window.oRequestAnimationFrame ||
-  window.msRequestAnimationFrame ||
-  function (callback) { window.setTimeout(callback, 1000 / 60); };
-
-// define cancelAnimationFrame function
-const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
-
-const x = p => { throw new Error(`Missing Parameter: ${p}`); };
-
-const removeChild = el => {
-  while (el.firstChild) {
-    el.removeChild(el.firstChild);
-  }
-};
+import EventEmitter from './eventEmitter';
+import { rAF, cAF, x, removeChild } from './utils';
 
 const defaultOptions = {
   fps: 15,
@@ -107,7 +92,10 @@ class Lettering {
   }
 
   _removeChar() {
-    this.outputText.textContent = this.string.substring(0, this.stringIndex - 1);
+    const newString = this.string.substring(0, this.stringIndex - 1);
+    this.isInput
+      ? this.el.placeholder = newString
+      : this.outputText.textContent = newString;
     this.stringIndex--;
   }
 
@@ -179,6 +167,7 @@ class Lettering {
     cAF(this.requestId);
     this.isAnitmating = false;
     this.isBackspace ? this.stringIndex++ : this.stringIndex--;
+    return this;
   }
 
 }
