@@ -32,6 +32,7 @@ class Lettering extends EventEmitter {
     this.caretColor = this.options.caretColor || window.getComputedStyle(this.el).getPropertyValue('color');
     // string inside the element
     this.string = this.isInput ? this.el.placeholder : this.el.innerText;
+    this.stringUpdated = false;
 
     let _index;
     Object.defineProperties(this, {
@@ -166,12 +167,15 @@ class Lettering extends EventEmitter {
 
   }
 
-  updateString(string) {
-    this.backspace();
-    this.on('afterBackspace', () => {
-      this.string = string;
-      this.typing();
-    });
+  updateContent(string) {
+    this.stringUpdated = true;
+    this
+      .backspace()
+      .on('afterBackspace', () => {
+        this.string = string;
+        this.stringUpdated && this.typing();
+        this.stringUpdated = false;
+      });
   }
 
   typing() {
@@ -188,6 +192,7 @@ class Lettering extends EventEmitter {
     this.lastTime = Date.now();
 
     this._animate();
+    return this;
   }
 
   stop() {

@@ -34,7 +34,7 @@
     console.log(lettering);
     document.querySelector('.typing').addEventListener('click',function(){ lettering.typing(); })
     document.querySelector('.backspace').addEventListener('click',function(){ lettering.backspace(); })
-    document.querySelector('.update').addEventListener('click',function(){ lettering.updateString('这是新内容'); })
+    document.querySelector('.update').addEventListener('click',function(){ lettering.updateContent('这是新内容'); })
     var lettering2 = new Lettering('input')
     console.log(lettering2);
     document.querySelector('.typing-input').addEventListener('click',function(){ lettering2.typing(); })
