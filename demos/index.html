@@ -28,10 +28,10 @@
     var lettering = new Lettering('h1',{
       fps: 15,
     });
-    lettering.on('afterTyping',()=>{
+    lettering.addListener('afterTyping',function(){
       console.log('done');
     })
-    lettering.on('afterBackspace',()=>{
+    lettering.addListener('afterBackspace',function(){
       console.log('back');
     })
     console.log(lettering);

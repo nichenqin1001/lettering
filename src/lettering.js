@@ -100,25 +100,28 @@ class Lettering extends EventEmitter {
     if (this.stringIndex === this.maxStringIndex) {
       return this
         .stop()
-        .trigger('afterTyping');
+        .emit('afterTyping');
     }
 
     if (this.stringIndex === 0) {
       return this
         .stop()
-        .trigger('afterBackspace');
+        .emit('afterBackspace');
     }
 
     if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
   }
 
   updateContent(string) {
+    const update = () => {
+      this.string = string;
+      this._refresh().typing();
+    };
+
     this
       .backspace()
-      .on('afterBackspace', () => {
-        this.string = string;
-        this._refresh().typing();
-      });
+      .addListener('afterBackspace', update);
+
   }
 
   typing() {

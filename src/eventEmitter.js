@@ -1,52 +1,46 @@
+let isFunction = function (obj) {
+  return typeof obj == 'function' || false;
+};
+
 class EventEmitter {
   constructor() {
-    this._events = {};
+    this.listener = new Map();
   }
 
-  on(event, fn, context = this) {
-    if (!this._events[event]) this._events[event] = new Map();
-    this._events[event].set(fn, context);
+  addListener(label, callback) {
+    this.listener.has(label) || this.listener.set(label, []);
+    this.listener.get(label).push(callback);
   }
 
-  once(type, fn, context = this) {
-    let fired = false;
+  removeListener(label, callback) {
+    let listeners = this.listeners.get(label),
+      index;
 
-    function magic() {
-      this.off(type, magic);
+    if (listeners && listeners.length) {
+      index = listeners.reduce((i, listener, index) => {
+        return (isFunction(listener) && listener === callback) ?
+          i = index :
+          i;
+      }, -1);
 
-      if (!fired) {
-        fired = true;
-        fn.apply(context, arguments);
+      if (index > -1) {
+        listeners.splice(index, 1);
+        this.listeners.set(label, listeners);
+        return true;
       }
     }
-
-    this.on(type, magic);
+    return false;
   }
 
-  off(type, fn) {
-    let _events = this._events[type];
-    if (!_events) {
-      return;
+  emit(label, ...args) {
+    const listeners = this.listener.get(label);
+
+    if (listeners && listeners.length) {
+      listeners.forEach(listener => listener(...args));
+      return true;
     }
 
-    let count = _events.length;
-    while (count--) {
-      if (_events[count][0] === fn) {
-        _events[count][0] = undefined;
-      }
-    }
-  }
-
-  trigger(event, ...args) {
-    const events = this._events[event];
-
-    if (!events) return;
-
-    [...events].forEach(event => {
-      const [fn, context] = event;
-      if (!fn) return;
-      fn.apply(context, args);
-    });
+    return false;
   }
 }
 
