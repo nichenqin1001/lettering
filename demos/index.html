@@ -13,7 +13,7 @@
 </head>
 <body>
   <h1>
-    我老婆又嫌边我了！
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis dolores at nulla distinctio reiciendis perspiciatis, aliquid amet recusandae? Minima, eum magni dicta velit perferendis facere saepe sint qui obcaecati. Iste quae veritatis explicabo pariatur fuga quasi nihil nesciunt ipsam, illum labore accusantium. Deserunt aliquam, vitae est ea magnam dolore. Magnam nihil, earum quia voluptatem velit atque beatae commodi, explicabo enim. Dicta veritatis alias quo labore vitae impedit repellat provident facere pariatur voluptatem eligendi dolore ipsam, perspiciatis voluptatibus eius a, id libero. Eum veritatis explicabo nesciunt quaerat cupiditate vel error natus. Id illum repellendus laudantium est itaque earum nostrum ratione velit.
   </h1>
   <button class="typing">typing</button>
   <button class="backspace">backspace</button>
@@ -26,7 +26,7 @@
   <script src="../dist/lettering.min.js"></script>
   <script>
     var lettering = new Lettering('h1',{
-      fps: 15,
+      fps: 60,
     });
     lettering.on('afterTyping',()=>{
       console.log('done');
@@ -37,7 +37,7 @@
     console.log(lettering);
     document.querySelector('.typing').addEventListener('click',function(){ lettering.typing(); })
     document.querySelector('.backspace').addEventListener('click',function(){ lettering.backspace(); })
-    document.querySelector('.update').addEventListener('click',function(){ lettering.updateContent('这是新内容'); })
+    document.querySelector('.update').addEventListener('click',function(){ lettering.updateContent('Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis dolorum rerum nesciunt laboriosam, recusandae tempora autem numquam excepturi tempore quas qui, veniam unde quibusdam, nisi neque natus minima, aliquid itaque maxime nostrum illo debitis porro obcaecati illum! Earum illo iusto consequatur nobis harum doloribus, laboriosam sint quas laborum vero alias qui quis, autem aspernatur, atque sed porro. Commodi sequi consectetur et sint, quasi? Unde debitis soluta numquam error impedit voluptatem omnis aperiam eaque veritatis doloremque est, vero esse doloribus ipsam quis eveniet distinctio fugiat ullam! Cumque consequuntur aut, iste temporibus iure neque quas nihil soluta, unde quisquam, vero natus, est.'); })
     var lettering2 = new Lettering('input')
     console.log(lettering2);
     document.querySelector('.typing-input').addEventListener('click',function(){ lettering2.typing(); })

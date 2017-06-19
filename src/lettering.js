@@ -27,6 +27,8 @@ class Lettering extends EventEmitter {
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     if (!!this.el.children.length) console.warn('lettering:', 'HTMLCollection in the element will be ignored, only text inside will remain');
     this.isInput = !!this.el.placeholder;
+    // the string will render into which element
+    this.output = this.isInput ? 'placeholder' : 'textContent';
     // init options
     this.options = Object.assign({}, defaultOptions, options);
     this.caretColor = this.options.caretColor || window.getComputedStyle(this.el).getPropertyValue('color');
@@ -35,9 +37,6 @@ class Lettering extends EventEmitter {
 
     let _index;
     Object.defineProperties(this, {
-      'outputElement': { value: document.createElement('span') },
-      'outputText': { value: document.createElement('span') },
-      'outputCaret': { value: document.createElement('span') },
       // cause using String.substring function
       'maxStringIndex': { value: this.string.length + 1 },
       'stringIndex': {
@@ -62,47 +61,18 @@ class Lettering extends EventEmitter {
 
   _init() {
     removeChild(this.el);
-    !this.isInput && this._createOutput()._cssOutputElement();
     this.options.autoStart && this.typing();
-  }
-
-  _createOutput() {
-    this.el.appendChild(this.outputElement);
-    this.outputElement.appendChild(this.outputText);
-    if (this.options.caretShow) {
-      this.outputElement.appendChild(this.outputCaret);
-      this._blink();
-    }
-    return this;
-  }
-
-  _cssOutputElement() {
-    this.outputElement.style.position = 'relative';
-    this.outputElement.style.display =
-      this.outputText.style.display =
-      this.outputCaret.style.display = 'inline-block';
-    this.outputCaret.style.position = 'absolute';
-    this.outputCaret.style.top = 0;
-    this.outputCaret.style.bottom = 0;
-    this.outputCaret.style.right = '-5px';
-    this.outputCaret.style.width = '2px';
-    this.outputCaret.style.backgroundColor = this.caretColor;
-    this.outputCaret.style.opacity = 1;
   }
 
   _printChar() {
     const newString = this.string.substring(0, this.stringIndex);
-    this.isInput
-      ? this.el.placeholder = newString
-      : this.outputText.textContent = newString;
+    this.el[this.targetEl] = newString;
     this.stringIndex++;
   }
 
   _removeChar() {
     const newString = this.string.substring(0, this.stringIndex - 1);
-    this.isInput
-      ? this.el.placeholder = newString
-      : this.outputText.textContent = newString;
+    this.el[this.output] = newString;
     this.stringIndex--;
   }
 
@@ -116,8 +86,6 @@ class Lettering extends EventEmitter {
     const shouldAnimate = delta > 1000 / this.options.fps;
     // main animation here
     if (shouldAnimate) {
-      // the caret always show when you are typing, right?
-      this.outputCaret.style.opacity = 1;
       // print char into document
       this.isBackspace ? this._removeChar() : this._printChar();
       // update timestamp to calculate delta again in next animation loop
@@ -137,33 +105,6 @@ class Lettering extends EventEmitter {
     }
 
     if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
-  }
-
-  /**
-   * caret blink animation
-   * all the time stamp will wrapped inside the function
-   * because the rate of blink animation is constant
-   * @memberof Lettering
-   */
-  _blink() {
-    let lastTime = Date.now();
-
-    const _blinkAnimate = () => {
-      const now = Date.now();
-      const delta = now - lastTime;
-      const shouldBlink = delta > 1000 / 2;
-
-      if (shouldBlink) {
-        this.outputCaret.style.opacity--;
-        if (this.outputCaret.style.opacity < 0) this.outputCaret.style.opacity = 1;
-        lastTime = now;
-      }
-
-      rAF(_blinkAnimate.bind(this));
-    };
-
-    _blinkAnimate();
-
   }
 
   updateContent(string) {
