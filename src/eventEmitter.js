@@ -14,7 +14,6 @@ class EventEmitter {
     if (!events) return;
 
     [...events].forEach(event => {
-      console.log(args);
       const [fn, context] = event;
       fn.apply(context, args);
     });

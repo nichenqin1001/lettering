@@ -123,10 +123,19 @@ class Lettering extends EventEmitter {
       // update timestamp to calculate delta again in next animation loop
       this.lastTime = now;
     }
-    if (this.stringIndex === this.maxStringIndex || this.stringIndex === 0)
+
+    if (this.stringIndex === this.maxStringIndex) {
       return this
         .stop()
-        .trigger('done', { string: this.string });
+        .trigger('afterTyping');
+    }
+
+    if (this.stringIndex === 0) {
+      return this
+        .stop()
+        .trigger('afterBackspace');
+    }
+
     if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
   }
 
@@ -155,6 +164,14 @@ class Lettering extends EventEmitter {
 
     _blinkAnimate();
 
+  }
+
+  updateString(string) {
+    this.backspace();
+    this.on('afterBackspace', () => {
+      this.string = string;
+      this.typing();
+    });
   }
 
   typing() {
