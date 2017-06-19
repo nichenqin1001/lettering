@@ -31,6 +31,9 @@
     lettering.on('afterTyping',()=>{
       console.log('done');
     })
+    lettering.on('afterBackspace',()=>{
+      console.log('back');
+    })
     console.log(lettering);
     document.querySelector('.typing').addEventListener('click',function(){ lettering.typing(); })
     document.querySelector('.backspace').addEventListener('click',function(){ lettering.backspace(); })
