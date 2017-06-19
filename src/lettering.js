@@ -66,7 +66,7 @@ class Lettering extends EventEmitter {
 
   _printChar() {
     const newString = this.string.substring(0, this.stringIndex);
-    this.el[this.targetEl] = newString;
+    this.el[this.output] = newString;
     this.stringIndex++;
   }
 
