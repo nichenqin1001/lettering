@@ -4,8 +4,8 @@ class EventEmitter {
   }
 
   on(event, fn, context = this) {
-    if (!this._events[event]) this._events[event] = [];
-    this._events[event] = [...this._events[event], [fn, context]];
+    if (!this._events[event]) this._events[event] = new Map();
+    this._events[event].set(fn, context);
   }
 
   once(type, fn, context = this) {

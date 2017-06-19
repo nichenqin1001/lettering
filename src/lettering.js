@@ -37,8 +37,6 @@ class Lettering extends EventEmitter {
 
     let _index;
     Object.defineProperties(this, {
-      // cause using String.substring function
-      'maxStringIndex': { value: this.string.length + 1 },
       'stringIndex': {
         get() { return _index; },
         set(value) {
@@ -48,6 +46,8 @@ class Lettering extends EventEmitter {
         }
       }
     });
+
+    this.maxStringIndex = this.string.length + 1;
 
     this.stringIndex = 1;
     this.isBackspace = false;
@@ -62,6 +62,11 @@ class Lettering extends EventEmitter {
   _init() {
     removeChild(this.el);
     this.options.autoStart && this.typing();
+  }
+
+  _refresh() {
+    this.maxStringIndex = this.string.length;
+    return this;
   }
 
   _printChar() {
@@ -110,9 +115,9 @@ class Lettering extends EventEmitter {
   updateContent(string) {
     this
       .backspace()
-      .once('afterBackspace', () => {
+      .on('afterBackspace', () => {
         this.string = string;
-        this.typing();
+        this._refresh().typing();
       });
   }
 
