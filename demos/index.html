@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
-  h1{
-    color: yellowgreen
-  }
+    h1 {
+      color: yellowgreen
+    }
   </style>
 </head>
+
 <body>
   <h1>
-    吴文婕
+    <strong>吴文婕</strong>
   </h1>
   <button class="typing">typing</button>
   <button class="backspace">backspace</button>
@@ -25,24 +27,32 @@
   </div>
   <script src="../dist/lettering.min.js"></script>
   <script>
-    var lettering = new Lettering('h1',{
-      fps: 60,
+    var lettering = new Lettering('h1', {
+      fps: 10,
     });
-    lettering.addListener('afterTyping',function(){
+    lettering.addListener('afterTyping', function () {
       console.log('done');
     })
-    lettering.addListener('afterBackspace',function(){
+    lettering.addListener('afterBackspace', function () {
       console.log('back');
     })
     console.log(lettering);
-    document.querySelector('.typing').addEventListener('click',function(){ lettering.typing(); })
-    document.querySelector('.backspace').addEventListener('click',function(){ lettering.backspace(); })
-    document.querySelector('.update').addEventListener('click',function(){ lettering.updateContent('她就是一只猪啊'); })
+    document.querySelector('.typing').addEventListener('click', function () { lettering.typing(); })
+    document.querySelector('.backspace').addEventListener('click', function () { lettering.backspace(); })
+    document
+      .querySelector('.update')
+      .addEventListener('click', function () {
+        lettering
+          .updateContent('她就是一只猪啊')
+          .once('afterTyping', function () {
+            console.log('updated');
+          })
+      })
     var lettering2 = new Lettering('input')
     console.log(lettering2);
-    document.querySelector('.typing-input').addEventListener('click',function(){ lettering2.typing(); })
-    document.querySelector('.backspace-input').addEventListener('click',function(){ lettering2.backspace(); })
-
+    document.querySelector('.typing-input').addEventListener('click', function () { lettering2.typing(); })
+    document.querySelector('.backspace-input').addEventListener('click', function () { lettering2.backspace(); })
   </script>
 </body>
+
 </html>

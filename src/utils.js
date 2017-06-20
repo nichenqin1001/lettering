@@ -8,7 +8,7 @@ export const rAF = window.requestAnimationFrame ||
 // define cancelAnimationFrame function
 export const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
 
-export const x = p => { throw new Error(`Missing Parameter: ${p}`); };
+export const throwDefaultError = p => { throw new Error(`Missing Parameter: ${p}`); };
 
 export const removeChild = el => {
   while (el.firstChild) {

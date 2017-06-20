@@ -31,6 +31,8 @@ yarn add lettering
 </script>
 ```
 
+Once you construct a new object, you get the control of text inside element.
+
 The text in the element will start type automatically.
 
 **Note:** Child Nodes inside the element will be ignored, only text typed.

@@ -1,10 +1,10 @@
 import EventEmitter from './eventEmitter';
-import { rAF, cAF, x, removeChild } from './utils';
+import { rAF, cAF, throwDefaultError as x, removeChild } from './utils';
 
 const defaultOptions = {
   fps: 15,
   autoStart: true,
-  caretShow: true
+  caretShow: true,
 };
 
 /**
@@ -26,14 +26,15 @@ class Lettering extends EventEmitter {
     // init type element
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     if (!!this.el.children.length) console.warn('lettering:', 'HTMLCollection in the element will be ignored, only text inside will remain');
+    // check if is input element
     this.isInput = !!this.el.placeholder;
-    // the string will render into which element
-    this.output = this.isInput ? 'placeholder' : 'textContent';
-    // init options
-    this.options = Object.assign({}, defaultOptions, options);
-    this.caretColor = this.options.caretColor || window.getComputedStyle(this.el).getPropertyValue('color');
     // string inside the element
     this.string = this.isInput ? this.el.placeholder : this.el.innerText;
+    // the string will render into which element
+    this.output = this.isInput ? 'placeholder' : 'textContent';
+
+    // init options
+    this.options = Object.assign({}, defaultOptions, options);
 
     let _index;
     Object.defineProperties(this, {
@@ -60,25 +61,33 @@ class Lettering extends EventEmitter {
   }
 
   _init() {
-    removeChild(this.el);
+    this._refresh(true);
+
     this.options.autoStart && this.typing();
   }
 
-  _refresh() {
-    this.maxStringIndex = this.string.length;
+  _refresh(force) {
+    if (force) {
+      removeChild(this.el);
+      this.stringIndex === 1;
+    }
+    this.maxStringIndex = this.string.length + 1;
     return this;
   }
 
-  _printChar() {
+  _renderChar() {
     const newString = this.string.substring(0, this.stringIndex);
     this.el[this.output] = newString;
+  }
+
+  _printChar() {
+    this._renderChar();
     this.stringIndex++;
   }
 
   _removeChar() {
-    const newString = this.string.substring(0, this.stringIndex - 1);
-    this.el[this.output] = newString;
     this.stringIndex--;
+    this._renderChar();
   }
 
   _animate() {
@@ -99,17 +108,21 @@ class Lettering extends EventEmitter {
 
     if (this.stringIndex === this.maxStringIndex) {
       return this
-        .stop()
+        ._stop()
         .emit('afterTyping');
     }
 
     if (this.stringIndex === 0) {
       return this
-        .stop()
+        ._stop()
         .emit('afterBackspace');
     }
 
-    if (this.isAnitmating) return this.requestId = rAF(this._animate.bind(this));
+    if (this.isAnitmating) {
+      return (
+        this.requestId = rAF(this._animate.bind(this))
+      );
+    };
   }
 
   updateContent(string) {
@@ -119,6 +132,8 @@ class Lettering extends EventEmitter {
         this.string = string;
         this._refresh().typing();
       });
+
+    return this;
   }
 
   typing() {
@@ -127,18 +142,22 @@ class Lettering extends EventEmitter {
     this.lastTime = Date.now();
 
     this._animate();
+
+    return this;
   }
 
   backspace() {
+
     this.isAnitmating = true;
     this.isBackspace = true;
     this.lastTime = Date.now();
 
     this._animate();
+
     return this;
   }
 
-  stop() {
+  _stop() {
     cAF(this.requestId);
     this.isAnitmating = false;
     this.isBackspace ? this.stringIndex++ : this.stringIndex--;
