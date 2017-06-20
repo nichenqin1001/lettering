@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mocha</title>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/mocha/3.4.2/mocha.min.css' />
+  <style>
+    #input {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="mocha"></div>
+  <div id="test"></div>
+  <input type="text" id="input" placeholder="test-placeholder">
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mocha/3.4.2/mocha.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/chai/4.0.2/chai.min.js'></script>
+  <script>
+    mocha.setup('bdd');
+  </script>
+  <script src="../dist/lettering.min.js"></script>
+  <script src="./lettring.test.js"></script>
+  <script>
+    mocha.run();
+  </script>
+</body>
+
+</html>
