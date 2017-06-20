@@ -5,6 +5,7 @@ const defaultOptions = {
   fps: 15,
   autoStart: true,
   caretShow: true,
+  caretContent: '|',
 };
 
 /**
@@ -31,13 +32,21 @@ class Lettering extends EventEmitter {
     // string inside the element
     this.string = this.isInput ? this.el.placeholder : this.el.innerText;
     // the string will render into which element
-    this.output = this.isInput ? 'placeholder' : 'textContent';
+    this.target = this.isInput ? 'placeholder' : 'textContent';
+
+    this.outputElement = this.isInput ? this.el : document.createElement('span');
+
 
     // init options
     this.options = Object.assign({}, defaultOptions, options);
 
+    this.caretShow = this.options.caretShow && !this.isInput;
+
+    this.caretClassName = this.options.caretClassName || 'lettering-caret';
+
     let _index;
     Object.defineProperties(this, {
+      'caretElement': { value: document.createElement('span') },
       'stringIndex': {
         get() { return _index; },
         set(value) {
@@ -63,21 +72,58 @@ class Lettering extends EventEmitter {
   _init() {
     this._refresh(true);
 
+    this.caretShow && this._createCaret()._cssCaret()._caretBlink();
+
     this.options.autoStart && this.typing();
   }
 
   _refresh(force) {
     if (force) {
       removeChild(this.el);
+      this.isInput || this.el.appendChild(this.outputElement);
       this.stringIndex === 1;
     }
     this.maxStringIndex = this.string.length + 1;
     return this;
   }
 
+  _createCaret() {
+    this.caret = document.createElement('span');
+    this.el.appendChild(this.caret);
+    return this;
+  }
+
+  _cssCaret() {
+    this.caret.className = this.caretClassName;
+    this.caret.innerHTML = this.options.caretContent;
+    this.caret.style.opacity = 1;
+    return this;
+  }
+
+  _caretBlink() {
+    let lastTime = Date.now();
+
+    const blink = () => {
+      const now = Date.now();
+      const delta = now - lastTime;
+      const shouldBlink = delta > 1000 / 2;
+
+      if (shouldBlink) {
+        this.caret.style.opacity--;
+        if (this.caret.style.opacity < 0) this.caret.style.opacity = 1;
+        lastTime = now;
+      }
+
+      rAF(blink.bind(this));
+    };
+
+    blink();
+
+  }
+
   _renderChar() {
     const newString = this.string.substring(0, this.stringIndex);
-    this.el[this.output] = newString;
+    this.outputElement[this.target] = newString;
   }
 
   _printChar() {
@@ -91,7 +137,7 @@ class Lettering extends EventEmitter {
   }
 
   _animate() {
-    this.isAnitmating = true;
+    if (!this.isAnitmating) return;
     // create new time stamp
     const now = Date.now();
     // calculate time delta
@@ -100,6 +146,7 @@ class Lettering extends EventEmitter {
     const shouldAnimate = delta > 1000 / this.options.fps;
     // main animation here
     if (shouldAnimate) {
+      this.caretShow && (this.caret.style.opacity = 1);
       // print char into document
       this.isBackspace ? this._removeChar() : this._printChar();
       // update timestamp to calculate delta again in next animation loop
@@ -147,7 +194,6 @@ class Lettering extends EventEmitter {
   }
 
   backspace() {
-
     this.isAnitmating = true;
     this.isBackspace = true;
     this.lastTime = Date.now();
