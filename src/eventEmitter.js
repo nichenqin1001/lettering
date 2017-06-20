@@ -12,24 +12,28 @@ class EventEmitter {
     this.listener.get(label).push(callback);
   }
 
-  removeListener(label, callback) {
-    let listeners = this.listeners.get(label),
-      index;
+  once(label, callback) {
+    let fired = false;
 
-    if (listeners && listeners.length) {
-      index = listeners.reduce((i, listener, index) => {
-        return (isFunction(listener) && listener === callback) ?
-          i = index :
-          i;
-      }, -1);
+    const magic = (...args) => {
+      this.removeListener(label, callback);
 
-      if (index > -1) {
-        listeners.splice(index, 1);
-        this.listeners.set(label, listeners);
-        return true;
+      if (!fired) {
+        fired = true;
+        callback(...args);
       }
+    };
+
+    this.addListener(label, magic);
+  }
+
+  removeListener(label, callback) {
+    let listeners = this.listener.get(label);
+
+    if (listeners) {
+      this.listener.set(label, listeners.filter(listener => !(isFunction(listener) && listener === callback)));
     }
-    return false;
+
   }
 
   emit(label, ...args) {
@@ -37,10 +41,7 @@ class EventEmitter {
 
     if (listeners && listeners.length) {
       listeners.forEach(listener => listener(...args));
-      return true;
     }
-
-    return false;
   }
 }
 

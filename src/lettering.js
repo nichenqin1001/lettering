@@ -113,15 +113,12 @@ class Lettering extends EventEmitter {
   }
 
   updateContent(string) {
-    const update = () => {
-      this.string = string;
-      this._refresh().typing();
-    };
-
     this
       .backspace()
-      .addListener('afterBackspace', update);
-
+      .once('afterBackspace', () => {
+        this.string = string;
+        this._refresh().typing();
+      });
   }
 
   typing() {
