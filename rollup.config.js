@@ -7,9 +7,9 @@ export default {
   plugins: [
     resolve(),
     babel({
-      exclude: 'node_modules/**'
+      exclude: 'node_modules/**',
     })
   ],
   moduleName: 'Lettering',
-  dest: './dist/lettering.min.js'
+  dest: './dist/lettering.min.js',
 };

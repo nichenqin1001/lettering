@@ -4,12 +4,12 @@ let isFunction = function (obj) {
 
 class EventEmitter {
   constructor() {
-    this.listener = new Map();
+    this.listener = {};
   }
 
   addListener(label, callback) {
-    this.listener.has(label) || this.listener.set(label, []);
-    this.listener.get(label).push(callback);
+    this.listener[label] || (this.listener[label] = []);
+    this.listener[label].push(callback);
   }
 
   once(label, callback) {
@@ -28,16 +28,16 @@ class EventEmitter {
   }
 
   removeListener(label, callback) {
-    let listeners = this.listener.get(label);
+    let listeners = this.listener[label];
 
     if (listeners) {
-      this.listener.set(label, listeners.filter(listener => !(isFunction(listener) && listener === callback)));
+      this.listener[label] = listeners.filter(listener => !(isFunction(listener) && listener === callback));
     }
 
   }
 
   emit(label, ...args) {
-    const listeners = this.listener.get(label);
+    const listeners = this.listener[label];
 
     if (listeners && listeners.length) {
       listeners.forEach(listener => listener(...args));
