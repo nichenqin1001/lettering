@@ -179,6 +179,16 @@ lettering.once('afterTyping', function(){
 })
 ```
 
+## test
+
+test with mocha
+
+```bash
+git clone https://github.com/nichenqin1001/lettering.git
+```
+
+then open test/index.html file
+
 ## MIT LICENSE
 
 MIT License
