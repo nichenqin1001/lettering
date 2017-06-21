@@ -8,11 +8,7 @@
   <title>Lettering Library Jasmine Test</title>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <link rel="stylesheet" href="./index.css">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.6.4/jasmine.min.css' />
-
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.6.4/jasmine.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.6.4/jasmine-html.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.6.4/boot.min.js'></script>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/mocha/3.4.2/mocha.min.css' />
 </head>
 
 <body>
@@ -20,7 +16,7 @@
     <section>
       <h1>Text Test</h1>
       <h1 id="test">
-        Lorem ipsum dolor sit amet.
+        Lorem ipsum dolor.
       </h1>
     </section>
     <section>
@@ -28,14 +24,17 @@
       <input class="form-control" id="test-input" type="text" placeholder="input test">
     </section>
   </div>
+  <div id="mocha"></div>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mocha/3.4.2/mocha.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/chai/4.0.2/chai.min.js'></script>
   <script src="../dist/lettering.min.js"></script>
   <script>
-    var testText;
-    var lettering = new Lettering('#test');
-    var letteringInput = new Lettering('#test-input');
+    mocha.setup('bdd')
   </script>
-
   <script src="./lettring.test.js"></script>
+  <script>
+    mocha.run();
+  </script>
 </body>
 
 </html>
