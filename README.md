@@ -74,7 +74,7 @@ var lettering = new Lettering(elment, options)
 
 - required: `false`
 
-#### fps
+### fps
 
 - - type: `number`
 
@@ -88,7 +88,31 @@ Controls speed, means character per second, if set to 1, render one character ev
 
 - default: `true`
 
-Will involk type() function, and start to render.
+Will involk type() function, and start to type.
+
+### caretShow
+
+- type: `boolean`
+
+- default: `true`
+
+Control if blinking caret shows.
+
+### caretContent
+
+- type: `string`
+
+- default: `|`
+
+The caret shows after the typing text.
+
+### caretClassName
+
+- type: `string`
+
+- default: `lettering-caret`
+
+The css class of caret, you can set to your own class name to control it.
 
 ## API
 
@@ -102,7 +126,19 @@ lettering.typing();
 
 ### backspace()
 
+```javascript
+lettering.backspace()
+```
+
 ### updateContent(string)
+
+The content will backspace and type again;
+
+```javascript
+var newString = 'new string'
+
+lattering.updateContent(newString);
+```
 
 ## Custom Events
 
@@ -127,3 +163,11 @@ lettering.addListener('afterBackspace', function(){
 ### once()
 
 The function you bind will involke only once.
+
+```javascript
+var lettring = new Lettering(element);
+
+lettering.once('afterTyping', function(){
+  console.log('typed');
+})
+```

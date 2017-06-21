@@ -6,6 +6,7 @@ const defaultOptions = {
   autoStart: true,
   caretShow: true,
   caretContent: '|',
+  caretClassName: 'lettering-caret'
 };
 
 /**
@@ -41,8 +42,6 @@ class Lettering extends EventEmitter {
     this.options = Object.assign({}, defaultOptions, options);
 
     this.caretShow = this.options.caretShow && !this.isInput;
-
-    this.caretClassName = this.options.caretClassName || 'lettering-caret';
 
     let _index;
     Object.defineProperties(this, {
@@ -94,7 +93,7 @@ class Lettering extends EventEmitter {
   }
 
   _cssCaret() {
-    this.caret.className = this.caretClassName;
+    this.caret.className = this.options.caretClassName;
     this.caret.innerHTML = this.options.caretContent;
     this.caret.style.opacity = 1;
     return this;
