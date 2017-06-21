@@ -10,14 +10,31 @@ body {
 }
 
 .main {
-  max-width: 1200px;
+  max-width: 500px;
   width: 98%;
   margin: 50px auto;
 }
 
 .button {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 20px;
+  background-color: #fff;
   padding: 5px 10px;
-  background-color: #eee;
   border: 2px solid #333;
   border-radius: 5px;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+.button:hover {
+  background-color: #333;
+  color: #fff
+}
+
+.form-control {
+  padding: 5px;
+  font-size: 15px;
+  border: 1px solid #333;
+  outline: none;
+  border-radius: 2px;
 }

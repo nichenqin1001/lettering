@@ -7,8 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Lettering Library Jasmine Test</title>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.6.4/jasmine.min.css' />
   <link rel="stylesheet" href="./index.css">
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.6.4/jasmine.min.css' />
 
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.6.4/jasmine.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.6.4/jasmine-html.min.js'></script>
@@ -18,48 +18,21 @@
 <body>
   <div class="main">
     <section>
-      <h1 class="test">我的名字是</h1>
-      <div class="buttons">
-        <button class="button typing">typing</button>
-        <button class="button backspace">backspace</button>
-        <button class="button update">update</button>
-      </div>
+      <h1>Text Test</h1>
+      <h1 id="test">
+        Lorem ipsum dolor sit amet.
+      </h1>
     </section>
     <section>
-      <input type="text" placeholder="input test">
-      <div class="buttons">
-        <button class="typing-input">typing</button>
-        <button class="backspace-input">backspace</button>
-      </div>
+      <h1>Input Test</h1>
+      <input class="form-control" id="test-input" type="text" placeholder="input test">
     </section>
   </div>
   <script src="../dist/lettering.min.js"></script>
   <script>
-    var lettering = new Lettering('h1', {
-      fps: 10,
-    });
-    lettering.addListener('afterTyping', function () {
-      console.log('done');
-    })
-    lettering.addListener('afterBackspace', function () {
-      console.log('back');
-    })
-    console.log(lettering);
-    document.querySelector('.typing').addEventListener('click', function () { lettering.typing(); })
-    document.querySelector('.backspace').addEventListener('click', function () { lettering.backspace(); })
-    document
-      .querySelector('.update')
-      .addEventListener('click', function () {
-        lettering
-          .updateContent('她就是一只猪啊')
-          .once('afterTyping', function () {
-            console.log('updated');
-          })
-      })
-    var lettering2 = new Lettering('input')
-    console.log(lettering2);
-    document.querySelector('.typing-input').addEventListener('click', function () { lettering2.typing(); })
-    document.querySelector('.backspace-input').addEventListener('click', function () { lettering2.backspace(); })
+    var testText;
+    var lettering = new Lettering('#test');
+    var letteringInput = new Lettering('#test-input');
   </script>
 
   <script src="./lettring.test.js"></script>
