@@ -1,6 +1,6 @@
 {
   "name": "lettering",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "./dist/lettering.js",
   "repository": "https://github.com/nichenqin1001/lettering.git",
   "author": "nichenqin1001 <nichenqin@hotmail.com>",

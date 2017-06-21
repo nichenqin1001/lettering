@@ -174,7 +174,7 @@ The function you bind will involke only once.
 var lettring = new Lettering(element);
 
 lettering.once('afterTyping', function(){
-  // will be log only once
+  // will be logged only one time
   console.log('typed');
 })
 ```
