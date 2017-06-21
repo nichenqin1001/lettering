@@ -6,7 +6,6 @@
   "author": "nichenqin1001 <nichenqin@hotmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "./node_modules/.bin/karma start",
     "build": "rollup -c",
     "dev": "rollup -c -w"
   },

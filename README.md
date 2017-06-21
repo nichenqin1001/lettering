@@ -74,7 +74,7 @@ var lettering = new Lettering(elment, options)
 
 - required: `false`
 
-### fps
+#### fps
 
 - - type: `number`
 
@@ -82,7 +82,7 @@ var lettering = new Lettering(elment, options)
 
 Controls speed, means character per second, if set to 1, render one character every one second, set to 2, render two every second, and so on...
 
-### autoStart
+#### autoStart
 
 - type: `boolean`
 
@@ -90,7 +90,7 @@ Controls speed, means character per second, if set to 1, render one character ev
 
 Will involk type() function, and start to type.
 
-### caretShow
+#### caretShow
 
 - type: `boolean`
 
@@ -98,7 +98,7 @@ Will involk type() function, and start to type.
 
 Control if blinking caret shows.
 
-### caretContent
+#### caretContent
 
 - type: `string`
 
@@ -106,7 +106,7 @@ Control if blinking caret shows.
 
 The caret shows after the typing text.
 
-### caretClassName
+#### caretClassName
 
 - type: `string`
 
@@ -142,20 +142,26 @@ lattering.updateContent(newString);
 
 ## Custom Events
 
-### addListener()
-
 Two custom events provided:
+
+- afterTyping: after text typed.
+
+- afterBackspace: after text deleted.
+
+### addListener()
 
 ```javascript
 var lettering = new Lettering(element);
 
 // will be invoked after typing the text
 lettering.addListener('afterTyping', function(){
+  // every time text typed, log done
   console.log('done');
 })
 
 // will be invoked after delete the text
 lettering.addListener('afterBackspace', function(){
+  // every time text typed, log back
   console.log('back');
 })
 ```
@@ -168,6 +174,31 @@ The function you bind will involke only once.
 var lettring = new Lettering(element);
 
 lettering.once('afterTyping', function(){
+  // will be log only once
   console.log('typed');
 })
 ```
+
+## MIT LICENSE
+
+MIT License
+
+Copyright (c) 2017 倪晨钦
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
